@@ -12,7 +12,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/HomeImg/MyPetLogos.png";
 import { useCartWishlist } from "../../context/CartWishlistContext";
 
-import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import ThemeToggle from "../Themetoggle/Themetoggle";
 
 export default function Navbarui() {
   const [mobileOpen, setMobileOpen] = useState(false);
