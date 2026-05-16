@@ -12,6 +12,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/HomeImg/MyPetLogos.png";
 import { useCartWishlist } from "../../context/CartWishlistContext";
 
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
+
 export default function Navbarui() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
@@ -55,6 +57,10 @@ export default function Navbarui() {
 
       {/* Icons + Dropdown */}
       <NavbarContent as="div" justify="end" className="flex gap-3 items-center">
+
+         <NavbarItem>
+                     <ThemeToggle />
+       </NavbarItem>
 
         {/* Wishlist */}
         <NavbarItem>
@@ -169,3 +175,4 @@ export default function Navbarui() {
     </Navbar>
   );
 }
+

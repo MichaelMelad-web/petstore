@@ -13,7 +13,6 @@ const successToast = (msg) =>
     style: { background: "#6B21A8", color: "#fff", fontWeight: "600", borderRadius: "12px" },
     progressStyle: { background: "#D8B4FE" },
   });
-
 const errorToast = (msg) =>
   toast.error(msg, {
     style: { background: "#FEF2F2", color: "#B91C1C", fontWeight: "600", borderRadius: "12px", border: "1px solid #FECACA" },
@@ -22,7 +21,7 @@ const errorToast = (msg) =>
   });
 
 export default function Wishlist() {
-  const [items, setItems] = useState([]);
+  const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { fetchCounts } = useCartWishlist();
@@ -32,16 +31,12 @@ export default function Wishlist() {
       const res = await getWishlist();
       const wishlist = res.data?.data?.wishlist ?? res.data?.wishlist ?? res.data?.data ?? res.data ?? [];
       setItems(Array.isArray(wishlist) ? wishlist : []);
-    } catch {
-      errorToast("Failed to load wishlist");
-    } finally {
-      setLoading(false);
-    }
+    } catch { errorToast("Failed to load wishlist"); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { fetchWishlist(); }, []);
 
-  // Try productId first, fallback to wishlistItemId
   const handleRemove = async (productId, wishlistItemId) => {
     try {
       await removeFromWishlist(productId);
@@ -55,12 +50,8 @@ export default function Wishlist() {
           await fetchCounts();
           successToast("Removed from wishlist");
           fetchWishlist();
-        } catch {
-          errorToast("Failed to remove item");
-        }
-      } else {
-        errorToast(err.response?.data?.message || "Failed to remove item");
-      }
+        } catch { errorToast("Failed to remove item"); }
+      } else { errorToast(err.response?.data?.message || "Failed to remove item"); }
     }
   };
 
@@ -70,9 +61,7 @@ export default function Wishlist() {
       await fetchCounts();
       successToast("Wishlist cleared");
       setItems([]);
-    } catch (err) {
-      errorToast(err.response?.data?.message || "Failed to clear wishlist");
-    }
+    } catch (err) { errorToast(err.response?.data?.message || "Failed to clear wishlist"); }
   };
 
   const handleMoveToCart = async (productId, wishlistItemId) => {
@@ -82,45 +71,45 @@ export default function Wishlist() {
       await handleRemove(productId, wishlistItemId);
       await fetchCounts();
       successToast("Moved to cart 🛒");
-    } catch (err) {
-      errorToast(err.response?.data?.message || "Failed to move to cart");
-    }
+    } catch (err) { errorToast(err.response?.data?.message || "Failed to move to cart"); }
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-100 px-4 py-10 pt-40">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-[#13111C] px-4 py-10 pt-50 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
 
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate(-1)}
-              className="p-2 rounded-xl border border-gray-200 bg-white hover:border-purple-300 hover:text-purple-700 transition">
+              className="p-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1e1a2e] hover:border-purple-300 hover:text-purple-500 dark:text-gray-300 transition">
               <HiArrowLeft className="text-lg" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">My Wishlist</h1>
-              <p className="text-sm text-gray-400">{items.length} item{items.length !== 1 ? "s" : ""}</p>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">My Wishlist</h1>
+              <p className="text-sm text-gray-400 dark:text-gray-500">{items.length} item{items.length !== 1 ? "s" : ""}</p>
             </div>
           </div>
           {items.length > 0 && (
             <button onClick={handleClear}
-              className="flex items-center gap-2 px-4 py-2.5 border-2 border-red-100 bg-red-50 text-red-500 font-semibold rounded-xl hover:bg-red-500 hover:text-white transition text-sm">
+              className="flex items-center gap-2 px-4 py-2.5 border-2 border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 text-red-500 font-semibold rounded-xl hover:bg-red-500 hover:text-white hover:border-red-500 transition text-sm">
               <HiOutlineTrash /> Clear All
             </button>
           )}
         </div>
 
+        {/* Loading */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-white rounded-2xl animate-pulse" />
+              <div key={i} className="h-64 bg-white dark:bg-[#1e1a2e] rounded-2xl animate-pulse" />
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow p-10 text-center">
-            <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">💜</div>
-            <p className="text-gray-500 font-medium">Your wishlist is empty</p>
-            <p className="text-gray-400 text-sm mt-1">Save items you love to find them later</p>
+          <div className="bg-white dark:bg-[#1e1a2e] rounded-2xl shadow p-10 text-center border border-gray-100 dark:border-purple-900/30">
+            <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">💜</div>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">Your wishlist is empty</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Save items you love to find them later</p>
             <button onClick={() => navigate("/products")}
               className="mt-5 px-6 py-2.5 bg-[#6B21A8] text-white font-semibold rounded-xl hover:bg-purple-800 transition text-sm">
               Browse Products
@@ -129,17 +118,14 @@ export default function Wishlist() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map((item) => {
-              // Support both { product: {...} } and flat product object structures
               const product = item?.product ?? item;
               if (!product?._id) return null;
-              // wishlistItemId = item._id if nested, else undefined
               const wishlistItemId = item?.product ? item._id : undefined;
-
               return (
                 <div key={item._id ?? product._id}
-                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-purple-100 transition-all group">
-                  <div
-                    className="relative h-48 bg-gray-50 cursor-pointer overflow-hidden"
+                  className="bg-white dark:bg-[#1e1a2e] rounded-2xl shadow-sm border border-gray-100 dark:border-purple-900/30 overflow-hidden hover:shadow-md hover:border-purple-200 dark:hover:border-purple-700 transition-all group">
+                  {/* Image */}
+                  <div className="relative h-48 bg-gray-50 dark:bg-[#2a2040] cursor-pointer overflow-hidden"
                     onClick={() => navigate(`/products/${product._id}`)}>
                     <img
                       src={product.image?.secure_url ?? product.image}
@@ -151,13 +137,15 @@ export default function Wishlist() {
                       {product.category}
                     </span>
                   </div>
+
+                  {/* Info */}
                   <div className="p-4">
                     <h3
-                      className="font-bold text-gray-800 text-sm truncate cursor-pointer hover:text-purple-700 transition mb-1"
+                      className="font-bold text-gray-800 dark:text-white text-sm truncate cursor-pointer hover:text-purple-600 dark:hover:text-purple-400 transition mb-1"
                       onClick={() => navigate(`/products/${product._id}`)}>
                       {product.name}
                     </h3>
-                    <p className="text-purple-700 font-bold text-base mb-3">{product.price} EGP</p>
+                    <p className="text-purple-600 dark:text-purple-400 font-bold text-base mb-3">{product.price} EGP</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleMoveToCart(product._id, wishlistItemId ?? item._id)}
@@ -166,7 +154,7 @@ export default function Wishlist() {
                       </button>
                       <button
                         onClick={() => handleRemove(product._id, wishlistItemId ?? item._id)}
-                        className="p-2 border border-red-100 text-red-400 rounded-xl hover:bg-red-50 hover:border-red-300 transition">
+                        className="p-2 border border-red-100 dark:border-red-900/50 text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 transition">
                         <HiOutlineTrash size={16} />
                       </button>
                     </div>

@@ -8,13 +8,11 @@ import {
   HiOutlinePlus, HiOutlineTrash, HiOutlinePencil,
   HiOutlineHome, HiArrowLeft, HiStar,
 } from "react-icons/hi";
-import {
-  getAddresses, addAddress, updateAddress, removeAddress,
-} from "../../services/addressServices";
+import { getAddresses, addAddress, updateAddress, removeAddress } from "../../services/addressServices";
 
 const inputStyle = {
   inputWrapper:
-    "bg-white border border-gray-200 shadow-none rounded-xl data-[focus=true]:border-purple-400 data-[focus=true]:ring-2 data-[focus=true]:ring-purple-400",
+    "bg-white dark:bg-[#2a2040] border border-gray-200 dark:border-purple-800 shadow-none rounded-xl data-[focus=true]:border-purple-400 data-[focus=true]:ring-2 data-[focus=true]:ring-purple-400",
 };
 
 const successToast = (msg) =>
@@ -22,7 +20,6 @@ const successToast = (msg) =>
     style: { background: "#6B21A8", color: "#fff", fontWeight: "600", borderRadius: "12px" },
     progressStyle: { background: "#D8B4FE" },
   });
-
 const errorToast = (msg) =>
   toast.error(msg, {
     style: { background: "#FEF2F2", color: "#B91C1C", fontWeight: "600", borderRadius: "12px", border: "1px solid #FECACA" },
@@ -33,18 +30,21 @@ const errorToast = (msg) =>
 function AddressForm({ initial, onSubmit, onCancel, isSubmitting }) {
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      details: initial?.details || "",
-      city: initial?.city || "",
+      details:   initial?.details   || "",
+      city:      initial?.city      || "",
       isDefault: initial?.isDefault || false,
     },
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 bg-purple-50 rounded-2xl p-5 border border-purple-100">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-3 bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-5 border border-purple-100 dark:border-purple-800"
+    >
       <Input
         {...register("details", { required: "Address details are required" })}
         placeholder="e.g. 123 Tahrir Square, Downtown"
-        label="Address Details"
+        
         errorMessage={errors.details?.message}
         isInvalid={Boolean(errors.details)}
         radius="lg"
@@ -53,36 +53,26 @@ function AddressForm({ initial, onSubmit, onCancel, isSubmitting }) {
       <Input
         {...register("city", { required: "City is required" })}
         placeholder="e.g. Cairo"
-        label="City"
+       
         errorMessage={errors.city?.message}
         isInvalid={Boolean(errors.city)}
         radius="lg"
         classNames={inputStyle}
       />
 
-      {/* Set as Default checkbox */}
-      <label className="flex items-center gap-3 cursor-pointer bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-purple-300 transition">
-        <input
-          type="checkbox"
-          {...register("isDefault")}
-          className="w-4 h-4 accent-purple-700 rounded"
-        />
-        <span className="text-sm font-semibold text-gray-600">Set as default address</span>
+      {/* Default checkbox */}
+      <label className="flex items-center gap-3 cursor-pointer bg-white dark:bg-[#2a2040] rounded-xl px-4 py-3 border border-gray-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-600 transition">
+        <input type="checkbox" {...register("isDefault")} className="w-4 h-4 accent-purple-700 rounded" />
+        <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">Set as default address</span>
       </label>
 
       <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex-1 py-2.5 bg-[#6B21A8] hover:bg-purple-800 disabled:opacity-60 text-white font-semibold rounded-xl transition text-sm"
-        >
+        <button type="submit" disabled={isSubmitting}
+          className="flex-1 py-2.5 bg-[#6B21A8] hover:bg-purple-800 disabled:opacity-60 text-white font-semibold rounded-xl transition text-sm">
           {isSubmitting ? "Saving..." : "Save Address"}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="flex-1 py-2.5 border-2 border-gray-200 text-gray-500 font-semibold rounded-xl hover:border-purple-300 hover:text-purple-700 transition text-sm"
-        >
+        <button type="button" onClick={onCancel}
+          className="flex-1 py-2.5 border-2 border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 font-semibold rounded-xl hover:border-purple-300 dark:hover:border-purple-600 hover:text-purple-700 dark:hover:text-purple-400 transition text-sm">
           Cancel
         </button>
       </div>
@@ -91,10 +81,10 @@ function AddressForm({ initial, onSubmit, onCancel, isSubmitting }) {
 }
 
 export default function Address() {
-  const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
+  const [addresses,  setAddresses]  = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [showForm,   setShowForm]   = useState(false);
+  const [editingId,  setEditingId]  = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -105,14 +95,10 @@ export default function Address() {
         res.data?.data?.addresses ??
         res.data?.data ??
         res.data?.addresses ??
-        res.data ??
-        [];
+        res.data ?? [];
       setAddresses(Array.isArray(data) ? data : []);
-    } catch {
-      errorToast("Failed to load addresses");
-    } finally {
-      setLoading(false);
-    }
+    } catch { errorToast("Failed to load addresses"); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { fetchAddresses(); }, []);
@@ -125,14 +111,8 @@ export default function Address() {
       setShowForm(false);
       fetchAddresses();
     } catch (err) {
-      const msg =
-        err.response?.data?.errors?.[0] ||
-        err.response?.data?.message ||
-        "Failed to add address";
-      errorToast(msg);
-    } finally {
-      setSubmitting(false);
-    }
+      errorToast(err.response?.data?.errors?.[0] || err.response?.data?.message || "Failed to add address");
+    } finally { setSubmitting(false); }
   };
 
   const handleUpdate = async (data) => {
@@ -143,14 +123,8 @@ export default function Address() {
       setEditingId(null);
       fetchAddresses();
     } catch (err) {
-      const msg =
-        err.response?.data?.errors?.[0] ||
-        err.response?.data?.message ||
-        "Failed to update address";
-      errorToast(msg);
-    } finally {
-      setSubmitting(false);
-    }
+      errorToast(err.response?.data?.errors?.[0] || err.response?.data?.message || "Failed to update address");
+    } finally { setSubmitting(false); }
   };
 
   const handleRemove = async (addressId) => {
@@ -158,55 +132,41 @@ export default function Address() {
       await removeAddress(addressId);
       successToast("Address removed");
       fetchAddresses();
-    } catch (err) {
-      errorToast(err.response?.data?.message || "Failed to remove address");
-    }
+    } catch (err) { errorToast(err.response?.data?.message || "Failed to remove address"); }
   };
 
-  // Set an address as default by sending isDefault: true in an update call
   const handleSetDefault = async (addr) => {
-    if (addr.isDefault) return; // already default
+    if (addr.isDefault) return;
     setSubmitting(true);
     try {
-      await updateAddress(addr._id, {
-        details: addr.details,
-        city: addr.city,
-        isDefault: true,
-      });
+      await updateAddress(addr._id, { details: addr.details, city: addr.city, isDefault: true });
       successToast("Default address updated ⭐");
       fetchAddresses();
-    } catch (err) {
-      errorToast(err.response?.data?.message || "Failed to set default address");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) { errorToast(err.response?.data?.message || "Failed to set default address"); }
+    finally { setSubmitting(false); }
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-100 px-4 py-10 pt-50">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-100 dark:bg-[#13111C] px-4 py-10 pt-50 transition-colors duration-300">
       <div className="max-w-2xl mx-auto">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-xl border border-gray-200 bg-white hover:border-purple-300 hover:text-purple-700 transition"
-            >
+            <button onClick={() => navigate(-1)}
+              className="p-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1e1a2e] hover:border-purple-300 dark:hover:border-purple-600 hover:text-purple-600 dark:text-gray-300 transition">
               <HiArrowLeft className="text-lg" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">My Addresses</h1>
-              <p className="text-sm text-gray-400">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">My Addresses</h1>
+              <p className="text-sm text-gray-400 dark:text-gray-500">
                 {addresses.length} saved address{addresses.length !== 1 ? "es" : ""}
               </p>
             </div>
           </div>
           {!showForm && !editingId && (
-            <button
-              onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#6B21A8] text-white font-semibold rounded-xl hover:bg-purple-800 transition text-sm"
-            >
+            <button onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#6B21A8] text-white font-semibold rounded-xl hover:bg-purple-800 transition text-sm">
               <HiOutlinePlus className="text-base" /> Add New
             </button>
           )}
@@ -215,11 +175,7 @@ export default function Address() {
         {/* Add Form */}
         {showForm && (
           <div className="mb-4">
-            <AddressForm
-              onSubmit={handleAdd}
-              onCancel={() => setShowForm(false)}
-              isSubmitting={submitting}
-            />
+            <AddressForm onSubmit={handleAdd} onCancel={() => setShowForm(false)} isSubmitting={submitting} />
           </div>
         )}
 
@@ -227,15 +183,17 @@ export default function Address() {
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-white rounded-2xl animate-pulse" />
+              <div key={i} className="h-24 bg-white dark:bg-[#1e1a2e] rounded-2xl animate-pulse" />
             ))}
           </div>
+
         ) : addresses.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow p-10 text-center">
-            <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏠</div>
-            <p className="text-gray-500 font-medium">No addresses yet</p>
-            <p className="text-gray-400 text-sm mt-1">Add your first address to get started</p>
+          <div className="bg-white dark:bg-[#1e1a2e] rounded-2xl shadow border border-gray-100 dark:border-purple-900/30 p-10 text-center">
+            <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏠</div>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">No addresses yet</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Add your first address to get started</p>
           </div>
+
         ) : (
           <div className="space-y-3">
             {addresses.map((addr) => (
@@ -248,44 +206,59 @@ export default function Address() {
                     isSubmitting={submitting}
                   />
                 ) : (
-                  <div className={`bg-white rounded-2xl shadow-sm border px-5 py-4 flex items-center gap-4 hover:shadow-md transition-all ${addr.isDefault ? "border-purple-300" : "border-gray-100 hover:border-purple-100"}`}>
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${addr.isDefault ? "bg-purple-100" : "bg-purple-50"}`}>
-                      <HiOutlineHome className="text-purple-600 text-xl" />
+                  <div className={`
+                    bg-white dark:bg-[#1e1a2e] rounded-2xl shadow-sm border px-5 py-4
+                    flex items-center gap-4 hover:shadow-md transition-all
+                    ${addr.isDefault
+                      ? "border-purple-300 dark:border-purple-600"
+                      : "border-gray-100 dark:border-purple-900/30 hover:border-purple-100 dark:hover:border-purple-700"
+                    }
+                  `}>
+                    {/* Icon */}
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                      addr.isDefault
+                        ? "bg-purple-100 dark:bg-purple-900/40"
+                        : "bg-purple-50 dark:bg-purple-900/20"
+                    }`}>
+                      <HiOutlineHome className="text-purple-600 dark:text-purple-400 text-xl" />
                     </div>
+
+                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="font-bold text-gray-800 text-sm">
+                        <span className="font-bold text-gray-800 dark:text-white text-sm">
                           {addr.city || "Address"}
                         </span>
                         {addr.isDefault && (
-                          <span className="text-xs bg-purple-100 text-purple-700 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span className="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
                             <HiStar className="text-yellow-500" /> Default
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-500 text-sm truncate">{addr.details}</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm truncate">{addr.details}</p>
                     </div>
+
+                    {/* Actions */}
                     <div className="flex gap-2 shrink-0">
-                      {/* Set as Default button */}
                       {!addr.isDefault && (
                         <button
                           onClick={() => handleSetDefault(addr)}
                           disabled={submitting}
                           title="Set as default"
-                          className="p-2 rounded-xl border border-gray-200 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 transition disabled:opacity-50"
+                          className="p-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-400 hover:border-yellow-300 hover:text-yellow-500 transition disabled:opacity-50"
                         >
                           <HiStar size={16} />
                         </button>
                       )}
                       <button
                         onClick={() => setEditingId(addr._id)}
-                        className="p-2 rounded-xl border border-gray-200 text-gray-400 hover:border-purple-300 hover:text-purple-600 transition"
+                        className="p-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-400 hover:border-purple-300 dark:hover:border-purple-600 hover:text-purple-600 dark:hover:text-purple-400 transition"
                       >
                         <HiOutlinePencil size={16} />
                       </button>
                       <button
                         onClick={() => handleRemove(addr._id)}
-                        className="p-2 rounded-xl border border-red-100 text-red-400 hover:bg-red-50 hover:border-red-300 transition"
+                        className="p-2 rounded-xl border border-red-100 dark:border-red-900/50 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 transition"
                       >
                         <HiOutlineTrash size={16} />
                       </button>

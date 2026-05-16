@@ -1,7 +1,9 @@
 
+
 import { Outlet } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
 import Navbarui from "../../components/Navbar/Navbar";
+import Chatbot from "../../components/Chatbot/Chatbot";
 
 export default function MainLayout() {
   return (
@@ -9,6 +11,7 @@ export default function MainLayout() {
       <Navbarui />
       <Outlet />
       <Footer />
+      <Chatbot />
     </>
   );
 }

@@ -36,7 +36,7 @@ export default function Login() {
         data?.token ?? data?.Token ?? data?.accessToken ?? data?.data?.token;
       if (token) {
         localStorage.setItem("userToken", token);
-        toast.success(data.message || "Login Successfully 🎉");
+        toast.success(data.message || "Login Successfully ✅");
         navigate("/products");
       } else {
         toast.error("Login response did not include a token.");

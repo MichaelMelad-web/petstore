@@ -1,5 +1,3 @@
-
-
 import { z } from "zod";
 
 const nameRegex = /^[a-zA-Z0-9 _-]+$/;
@@ -35,7 +33,9 @@ export const regSchema = z
       .max(60, "Age must be less than 60"),
 
     gender: z.enum(["male", "female"], {
-      errorMap: () => ({ message: "Please choose your gender (male or female)" }),
+      errorMap: () => ({
+        message: "Please choose your gender (male or female)",
+      }),
     }),
 
     phone: z.string().optional(),
@@ -66,7 +66,10 @@ export const updateProfileSchema = z.object({
   gender: z.enum(["male", "female"], { message: "Gender is required" }),
   phone: z
     .string()
-    .regex(egyptianPhone, "Phone must be a valid Egyptian number (010/011/012/015 + 8 digits)")
+    .regex(
+      egyptianPhone,
+      "Phone must be a valid Egyptian number (010/011/012/015 + 8 digits)",
+    )
     .optional()
     .or(z.literal("")),
   age: z.coerce
@@ -78,8 +81,12 @@ export const updateProfileSchema = z.object({
 // ── Update Password ────────────────────────────────────────────────
 export const updatePasswordSchema = z
   .object({
-    oldPassword: z.string().min(8, "Current password must be at least 8 characters"),
-    newPassword: z.string().min(8, "New password must be at least 8 characters"),
+    oldPassword: z
+      .string()
+      .min(8, "Current password must be at least 8 characters"),
+    newPassword: z
+      .string()
+      .min(8, "New password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Please confirm your new password"),
   })
   .refine((d) => d.newPassword === d.confirmPassword, {

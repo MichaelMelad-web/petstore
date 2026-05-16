@@ -2,7 +2,7 @@ import PetCategories from "../../components/PetCategories/PetCategories";
 import ShopByCategory from "../../components/ShopByCategory/ShopByCategory";
 import BestPetFood from "../../components/BestPetFood/BestPetFood";
 import DiscountBanners from "../../components/DiscountBanners/DiscountBanners";
-import NewCollection from "../../components/NewCollection/NewCollection";
+
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
 
         <DiscountBanners />
 
-        <NewCollection />
+    
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 
+
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,15 +19,13 @@ import Wishlist from "./pages/Wishlist/Wishlist";
 import Cart from "./pages/Cart/Cart";
 import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
-
+import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed/PaymentFailed";
 import Contact from "./pages/Contact/Contact";
 
 import Register from "./pages/Auth/Register/Register";
 import Login from "./pages/Auth/Login/Login";
 import ForgetPassword from "./pages/ForgetPassword/ForgetPassword";
-
-import PaymentFailed from "./pages/PaymentFailed/PaymentFailed";
-import PaymentSuccess from "./pages/Paymentsuccess/Paymentsuccess";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -34,7 +33,7 @@ export default function App() {
       path: "",
       element: <MainLayout />,
       children: [
-        { index: true, element: <Navigate to="/home" /> },
+        { index: true,                    element: <Navigate to="/home" /> },
         { path: "/home",                  element: <Home /> },
         { path: "/about",                 element: <About /> },
         { path: "/contact",               element: <Contact /> },
@@ -56,9 +55,9 @@ export default function App() {
       path: "",
       element: <AuthLayout />,
       children: [
-        { path: "login",            element: <Login /> },
-        { path: "register",         element: <Register /> },
-        { path: "forget-password",  element: <ForgetPassword /> },
+        { path: "login",           element: <Login /> },
+        { path: "register",        element: <Register /> },
+        { path: "forget-password", element: <ForgetPassword /> },
       ],
     },
   ]);
