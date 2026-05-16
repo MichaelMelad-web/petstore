@@ -19,8 +19,8 @@ import Wishlist from "./pages/Wishlist/Wishlist";
 import Cart from "./pages/Cart/Cart";
 import Orders from "./pages/Orders/Orders";
 import Checkout from "./pages/Checkout/Checkout";
-import PaymentSuccess from "./pages/PaymentSuccess/PaymentSuccess";
-import PaymentFailed from "./pages/PaymentFailed/PaymentFailed";
+import PaymentSuccess from "./pages/Paymentsuccess/PaymentSuccess";
+import PaymentFailed from "./pages/Paymentfailed/PaymentFailed";
 import Contact from "./pages/Contact/Contact";
 
 import Register from "./pages/Auth/Register/Register";
